@@ -9,14 +9,16 @@ type InitialState = {
     formData: {},
     formDataArray: taskTileDataFormatType[]
     isLoading?: boolean,
-    getID: number
+    getID: string
 } 
+
+const pathname = window.location.pathname.split('/')
 
 const initialState :InitialState = {
     formData: {},
     formDataArray: [],
     isLoading: false,
-    getID:-1,
+    getID:pathname[pathname.length-1],
 
 }
 
@@ -24,16 +26,15 @@ const initialState :InitialState = {
 const dataReducer = (state = initialState, action: Action) => {
     switch(action.type){
         case ActionTypes.FORMDATA:
-            let newArray = [...state.formDataArray, {idx1:state.formDataArray.length,...action.payload}]
-            console.log(newArray, 'new array')
+            let newArray = [...state.formDataArray, {...action.payload}]
             return {
                 ...state,
                 formData:action.payload,
                 formDataArray: newArray,
-                getID: newArray.length-1,
+                getID: action.payload.idx,
                 isLoading:false
             }
-        case ActionTypes.FORMDATAUPDATE: 
+        case ActionTypes.FORMDATADELETE:
             return {
                 ...state,
                 formDataArray: action.payload
@@ -44,21 +45,17 @@ const dataReducer = (state = initialState, action: Action) => {
                 getID:action.payload
             }
         case ActionTypes.ADDPOSTTOBOARD:
-            const {id, post, newPostTime} = action.payload
+            const findIndex = state.formDataArray.findIndex(item=> item.idx === action.payload.idx)
             return update(state, {
                 formDataArray:{
-                    [id]:{
-                        posts:{$set:[...state.formDataArray[id].posts,post]},
-                        lastPostCreated:{$set:newPostTime}
-                    }
+                    [findIndex]:{$set: action.payload}
                 }
             })
         case ActionTypes.REMOVEPOSTFROMBOARD:
+            const findIndexonDelete = state.formDataArray.findIndex(item=> item.idx === action.payload.idx)
                 return update(state, {
                     formDataArray:{
-                        [action.payload.id]:{
-                            posts:{$set:action.payload.updatedPosts}
-                        }
+                        [findIndexonDelete]:{$set: action.payload}
                     }
                 })
         case ActionTypes.FETCH_DATA:

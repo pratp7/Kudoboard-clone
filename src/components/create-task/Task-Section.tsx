@@ -5,8 +5,9 @@ import TaskListCard from './task-list-card'
 import HeaderTask from './Header-Task'
 import {formDataArraySelector} from '../../store/reducers/datareducer'
 import {useSelector, useDispatch} from 'react-redux'
-import {formDataArrayTaskDelete, getIDtoViewBoard} from '../../store/actions'
+import {getIDtoViewBoard, deleteBoard} from '../../store/actions'
 import {useNavigate} from 'react-router-dom'
+import {bindActionCreators} from 'redux'
 
 type Props = {
     newboardHandler?: () => void
@@ -15,6 +16,7 @@ const TaskSection = ({newboardHandler = ()=>{}}:Props) => {
     const dispatch = useDispatch()
     const navigate = useNavigate()
     const formDataArray: Array<any> = useSelector(formDataArraySelector)
+    const deleteBoardFunc = bindActionCreators(deleteBoard, dispatch)
 
     const createNewBoardOnEmptyList : React.ReactNode = (
         <>
@@ -23,15 +25,13 @@ const TaskSection = ({newboardHandler = ()=>{}}:Props) => {
         </>
     )
 
-    const viewBoardHandler = (id:number):void =>{
-        console.log(id)
+    const viewBoardHandler = (id:string):void =>{
         dispatch(getIDtoViewBoard(id))
-        navigate('/dashboard/createboard')
+        navigate(`/dashboard/createboard/${id}`)
     }
-    const deleteBoardHandler = (id:number):void => {
-        const newArray = formDataArray.filter((item, idx) => idx !== id)
-        console.log(newArray)
-        dispatch(formDataArrayTaskDelete(newArray))
+    const deleteBoardHandler = (id:string):void => {
+        const newArray = formDataArray.filter((item) => item.idx !== id)
+        deleteBoardFunc(id, newArray)
 
     }
   return (
@@ -44,8 +44,8 @@ const TaskSection = ({newboardHandler = ()=>{}}:Props) => {
             <button className={classes['new-board-style']} onClick= {newboardHandler} >+ New Board</button>
         </div>
         <section className={classes['list-section']}>
-            {formDataArray.length ?formDataArray.map((item, idx) => {
-                return <TaskListCard {...item} key={idx} idx={idx} viewBoardHandler={viewBoardHandler} deleteBoardHandler={deleteBoardHandler}/>
+            {formDataArray.length ? formDataArray.map((item, idx) => {
+                return <TaskListCard {...item} key={idx} idx={item.idx} viewBoardHandler={viewBoardHandler} deleteBoardHandler={deleteBoardHandler}/>
             }):createNewBoardOnEmptyList}
         </section>
     </div>

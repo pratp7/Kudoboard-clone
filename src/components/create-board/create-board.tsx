@@ -5,6 +5,7 @@ import CreateBoardPost from './create-board-post'
 import AddedCardPost from './added-post-card'
 import { useDispatch } from 'react-redux'
 import {removePostFromBoard} from '../../store/actions'
+import { bindActionCreators } from 'redux'
 
 
 type Props = {
@@ -12,12 +13,13 @@ type Props = {
     title:string,
     posts: string[],
     displayName: string,
-    getID: number
+    getID: string
 }
 
 const CreateBoard = ({newboardHandler = ()=>{}, title, posts, displayName, getID}: Props) => {
   const [showPostCard, setShowPostCard] = useState(false)
   const dispatch=useDispatch()
+  const removePostFromBoardFunc = bindActionCreators(removePostFromBoard, dispatch)
 
   const addPostHandler = (condition:boolean):void => {
     setShowPostCard(condition)
@@ -25,7 +27,7 @@ const CreateBoard = ({newboardHandler = ()=>{}, title, posts, displayName, getID
   }
   const removePostHandler = (id:number) : void => {
     const updatedPosts = posts.filter((item, idx) => idx !==id)
-    dispatch(removePostFromBoard(getID, updatedPosts))
+    removePostFromBoardFunc(getID, updatedPosts)
     
   }
 
@@ -42,7 +44,7 @@ const CreateBoard = ({newboardHandler = ()=>{}, title, posts, displayName, getID
         </header>
         <section className={classes['card-post-section']}>
           {posts && posts.length && posts.map((post, idx)=> {
-            return <AddedCardPost post={post} key={idx} displayName={displayName} idx={idx} removePostHandler={removePostHandler}/>
+            return  <AddedCardPost post={post} key={idx} displayName={displayName} idx={idx} removePostHandler={removePostHandler}/>
           })}
         
       </section>

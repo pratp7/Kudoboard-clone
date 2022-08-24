@@ -10,6 +10,7 @@ type Props = {
 
 const AddedCardPost = ({post, displayName, removePostHandler, idx}:Props) => {
   return (
+    <>
     <div className={classes['added-post-main-section']}>
         <section>
         <h3>{post}</h3>
@@ -17,6 +18,7 @@ const AddedCardPost = ({post, displayName, removePostHandler, idx}:Props) => {
         </section>
         <span className={classes['cross-icon']} onClick={()=>removePostHandler(idx)}>X</span>
     </div>
+    </>
   )
 }
 

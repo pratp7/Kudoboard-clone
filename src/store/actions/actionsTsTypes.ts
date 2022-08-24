@@ -1,4 +1,5 @@
 import { ActionTypes } from './actionTypes'
+import {taskTileDataFormatType} from '../../components/utilities/constants'
 
 
 interface ShowNewBoardAction {
@@ -17,11 +18,11 @@ interface Logout {
 
 interface FormDataSave {
     type: ActionTypes.FORMDATA,
-    payload: {}
+    payload: taskTileDataFormatType
 
 }
 interface FormDataArrayTaskDelete {
-    type: ActionTypes.FORMDATAUPDATE,
+    type: ActionTypes.FORMDATADELETE,
     payload: {}
 
 }
@@ -32,12 +33,13 @@ interface GetIDtoViewBoard {
 }
 interface AddPostToBoard {
     type: ActionTypes.ADDPOSTTOBOARD
-    payload: {id:number, post: string,newPostTime:string}
+    payload: taskTileDataFormatType
 
 }
 interface RemovePostFromBoard {
     type: ActionTypes.REMOVEPOSTFROMBOARD
-    payload: {id:number,updatedPosts:string[]}
+    payload: taskTileDataFormatType
+
 
 }
 

@@ -9,6 +9,7 @@ import {userSelector, displayNameSelector} from '../../store/reducers/authreduce
 import taskTileDataFormat from '../utilities/constants'
 import {sendData} from '../../store/actions'
 import { bindActionCreators } from 'redux'
+import {v4} from 'uuid'
 
 type Props = {
   closeModal?: () => void
@@ -28,7 +29,7 @@ const CreateTaskCard = ({closeModal}: Props) => {
     closeModalFunc(dispatch)
     formDataFunc(formData)
     setFormData(taskTileDataFormat)
-    user ? navigate('/dashboard/createboard') : navigate('/login-page')
+    user ? navigate(`/dashboard/createboard/${formData.idx}`) : navigate('/login-page')
 
   }
 
@@ -44,7 +45,8 @@ const CreateTaskCard = ({closeModal}: Props) => {
       ...formData,
       title: e.target.value,
       creator: displayName,
-      created: new Date().toLocaleDateString()
+      created: new Date().toLocaleDateString(),
+      idx: v4()
     })
     
   }

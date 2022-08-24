@@ -3,6 +3,9 @@ import axios from 'axios'
 import { Api } from './http-url'
 import { Action } from './actionsTsTypes'
 import { Dispatch } from 'redux'
+import { taskTileDataFormatType } from '../../components/utilities/constants'
+import { db } from '../../Firebase'
+import { ref, onValue, remove, update,child, push } from 'firebase/database'
 
 export const showNewBoardAction = (value: boolean) => {
     return {
@@ -24,91 +27,113 @@ export const login = (userInfo:{}, user_id: string, displayName: string ) => {
     }
   }
 
-  export const formDataArrayTaskDelete = (formData:{}[])=> {
-    return {
-      type: ActionTypes.FORMDATAUPDATE,
-      payload: formData
-    }
-  }
-
-  export const getIDtoViewBoard = (id:number)=>{
+  export const getIDtoViewBoard = (id:string)=>{
     return {
       type:ActionTypes.GET_ID_TO_VIEW_BOARD,
       payload: id
     }
   }
 
-  export const addPostToBoard = (id:number, post: string,newPostTime:string) =>{
-    return {
-      type: ActionTypes.ADDPOSTTOBOARD,
-      payload:{id, post, newPostTime}
-    }
-  }
-
-  export const removePostFromBoard = (id:number,updatedPosts:string[])=> {
-    return {
-      type: ActionTypes.REMOVEPOSTFROMBOARD,
-      payload:{id,updatedPosts}
-    }
-  }
-
   //action creators 
 
-  export const fetchData = () => async(dispatch: Dispatch<Action>) => {
+  //Read Data
+
+  export const fetchData = () => async(dispatch: Dispatch<Action>, getState: () => any) => {
+    const userDisplayName = getState().authReducer['displayName']
     dispatch({
       type: ActionTypes.IS_LOADING
     })
-    let array = []
-    console.log('checking')
+    let array: Array<any> = []
     try{
-      const res = await axios.get(Api)
-      for(const key in res?.data){
-        let tempObj = {idx:key,...res?.data[key].boardData }
+      onValue(ref(db),(snapshot)=>{
+        const data = snapshot.val()
+         for(const key in data?.boards){
+        let tempObj = {bEKey: key, ...data?.boards[key].boardData, creator:userDisplayName}
         array.push(tempObj)
       }
-      console.log(array, 'array----------')
       dispatch({
         type:ActionTypes.FETCH_DATA,
         payload: array
       })
-
-
-    }catch(e) {
-      console.log(e)
+      })
+  }catch(e) {
+      console.log(e, 'error')
     }
 
   }
-
-  export const sendData = (boardData: {}) => async(dispatch: Dispatch<Action>)=> {
+  // Create /Post 
+  export const sendData = (boardData: taskTileDataFormatType) => async(dispatch: Dispatch<Action>)=> {
     dispatch({
       type: ActionTypes.IS_LOADING
     })
-    console.log('senddata')
     try{
       const data = await axios.post(Api, {boardData})
-      if(data.status === 200){
         dispatch({
           type: ActionTypes.FORMDATA,
           payload: boardData
         })
-       
-      }
-
     }catch(e){
-      console.log(e)
+      console.log(e, 'error')
     }
     
   }
 
-  // export const addPostToBoard = (id:number, post: string,newPostTime:string)=> async(dispatch: Dispatch<Action>) =>{
+  //Delete
 
-   
-  //   try{
-  //     const data = await axios.post(Api, {})
-  //   }catch (e){console.log(e)}
+  export const deleteBoard = (id:string, updatedArray:Array<{}>) => async(dispatch: Dispatch<Action>, getState: () => any) =>{
+    let fetchedArray = getState().dataReducer['formDataArray']
+    const addedPostObj = fetchedArray.filter((item:{idx:string}) => item.idx === id)[0]
 
-  //   dispatch( {
-  //     type: ActionTypes.ADDPOSTTOBOARD,
-  //     payload:{id, post, newPostTime}
-  //   })
-  // }
+    try {
+      remove(ref(db, `boards/${addedPostObj.bEKey}`))
+
+      dispatch({type: ActionTypes.FORMDATADELETE,
+        payload: updatedArray
+      })
+
+      
+    } catch (e) {
+      console.log(e, 'error')
+      
+    }
+
+  }
+
+  //Update
+
+  export const addPostToBoard = (id:string, post: string, newPostTime:string)=> async(dispatch: Dispatch<Action>, getState: () => any) =>{
+    let fetchedArray = getState().dataReducer['formDataArray']
+    const addedPostObj = fetchedArray.filter((item:{idx:string}) => item.idx === id)[0]
+    if(addedPostObj.posts){
+      addedPostObj.posts.push(post)
+    }else{
+      addedPostObj.posts = [post]
+    }
+    addedPostObj.lastPostCreated = newPostTime
+    try{
+      update(ref(db, `boards/${addedPostObj.bEKey}/boardData`),{...addedPostObj})
+        dispatch({
+          type: ActionTypes.ADDPOSTTOBOARD,
+          payload: addedPostObj
+        })
+    }catch (e){console.log(e, 'error')}
+  }
+
+  export const removePostFromBoard = (id:string,updatedPosts:string[])=> async(dispatch: Dispatch<Action>, getState: () => any) =>{
+    let fetchedArray = getState().dataReducer['formDataArray']
+    const addedPostObj = fetchedArray.filter((item:{idx:string}) => item.idx === id)[0]
+    addedPostObj.posts = updatedPosts
+
+  
+
+    try {
+      update(ref(db, `boards/${addedPostObj.bEKey}/boardData`),{...addedPostObj})
+      dispatch({
+        type: ActionTypes.ADDPOSTTOBOARD,
+        payload: addedPostObj
+      })
+      
+    } catch (error) {
+      console.log(error, 'error')
+    }
+  }

@@ -4,6 +4,7 @@ import { getIdSelector } from '../../store/reducers/datareducer'
 import { useSelector, useDispatch } from 'react-redux'
 import { addPostToBoard } from '../../store/actions'
 import moment from 'moment'
+import { bindActionCreators } from 'redux'
 
 type Props = {
   addPostHandler: (condition:boolean)=> void
@@ -13,10 +14,11 @@ const CreateBoardPost = ({addPostHandler}:Props) => {
   const [message, setMessage] = useState('')
   const boardID = useSelector(getIdSelector)
   const dispatch = useDispatch()
+  const addPostToBoardFunc = bindActionCreators(addPostToBoard, dispatch)
 
   const postData = ():void => {
-    let newPostCreatedDate = moment(new Date()).fromNow()
-    dispatch(addPostToBoard(boardID, message, newPostCreatedDate))
+    let newPostCreatedDate = moment(new Date()).format('LTS')
+    addPostToBoardFunc(boardID, message, `${newPostCreatedDate} - ${new Date().toLocaleDateString()}`)
     addPostHandler(false)
 
   }

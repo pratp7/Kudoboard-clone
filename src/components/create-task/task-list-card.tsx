@@ -46,7 +46,7 @@ const TaskListCard = ({title, forUser, creator, created, posts, idx,lastPostCrea
       <section className={classes['task-list-section']}>
         <div>
         <p>POSTS </p>
-        <p>{posts && posts.length} (Max of 10)</p>
+        <p>{posts && posts.length || 0} (Max of 10)</p>
         </div>
         <div>
         <p>LAST POST ADDED</p>
