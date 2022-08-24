@@ -1,0 +1,237 @@
+.dashboard-section{
+    position: relative;
+}
+
+.dashboard-section-pointer {
+    pointer-events: none;
+}
+
+.dashboard-section-blur{
+    background-color: rgb(151, 148, 148);
+    opacity: 0.4;
+    height: 100vh;
+    z-index: 500;
+}
+
+.dashboard {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+
+}
+
+.new-board-style{
+    background-color: #29C0FA;
+    padding: 0.5rem 1.5rem;
+    border-radius: 0.4rem;
+    color: #FFFFFF;
+    border:none;
+    cursor: pointer;
+}
+
+.create-task-card{
+    background-color: #FFFFFF;
+    max-width: 40rem;
+    width: 90%;
+    border-radius: 1rem;
+    box-shadow: 0.1rem 0.1rem 0.1rem 0.1rem  #b8b6b6;
+    margin: 0 auto;
+    z-index: 1000;
+    position:absolute ;
+    top: 25%;
+    left: 35%;
+}
+
+.create-task-card header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem;
+}
+
+.create-task-card header h1 {
+    margin: 0 auto;
+}
+
+.create-task-card img {
+    cursor: pointer;
+    max-width: 100%;
+}
+
+.create-task-form {
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.create-task-form .add-recipient{
+    text-decoration: none;
+    background-color: white;
+    border: none;
+    color:#29C0FA;
+    cursor: pointer;
+    font-size: 1rem;
+}
+
+.create-task-form .add-recipient span {
+    font-weight: bold;
+}
+
+
+.create-task-form .add-recipient:hover{
+    color: #13a5df;
+    text-decoration: underline;
+}
+
+.create-task-form input {
+    width: 100%;
+    padding: 1rem 0.5rem;
+}
+
+.input-style {
+    display: flex;
+    justify-content: space-between;
+    flex-direction: column;
+    margin-bottom: 0.5rem;
+}
+
+.input-style div {
+    margin: 0.5rem;
+}
+
+.input-style input {
+    width: 45%;
+    margin-right: 0.5rem;
+}
+
+.cross-icon{
+    background-color: #13a5df;
+    color: white;
+    font-weight: bold;
+    border-radius: 50%;
+    padding: 0.5rem 0.7rem;
+    cursor: pointer;
+}
+
+.create-board-button {
+    background-color:#29C0FA;
+    color: #FFFFFF;
+    font-weight: bold;
+    width: 100%;
+    border: none;
+    border-radius: 0.5rem;
+    padding: 1rem;
+    margin-top: 1rem;
+    cursor: pointer;
+}
+.list-section{
+    background-color: #f7f4f4;
+    padding: 1rem;
+}
+
+.task-list-card{
+    width: 80%;
+    max-width: 70rem;
+    background-color: #FFFFFF;
+    margin: 1rem auto;
+    padding: 1rem;
+    display: grid;
+    grid-template-columns: 30% 70%;
+}
+
+.task-list-header{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.view-board, .delete-board {
+    padding: 0.5rem 1.5rem;
+    border-radius: 0.4rem;
+    cursor: pointer;
+    background-color: transparent;
+    margin-right: 1rem;
+}
+
+.view-board{
+    color: #29C0FA;
+    border: 1px #29C0FA solid;
+}
+.view-board:hover{
+    border-color: #13a5df;
+    color: #13a5df;
+}
+
+.delete-board{
+    color: rgb(202, 25, 25);
+    border: 1px rgb(202, 25, 25) solid;
+}
+
+.delete-board:hover{
+    border-color: red;
+    color: red;
+}
+
+.task-list-section{
+    display: grid;
+    grid-template-columns: 50% 50%;
+    column-gap: 1rem;
+}
+
+.task-list-image{
+    width: 12rem;
+    height: 10rem;
+}
+
+.task-list-image img {
+    max-width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.new-board-list-section{
+    text-align: center;
+    margin-bottom: 1rem;
+}
+
+.board-section{
+    background: url('../../images/board-image.jpg');
+    width: 100vw;
+    height: 100vh;
+}
+
+.board-header{
+    background-color: #144E76;
+    color: #FFFFFF;
+    text-align: center;
+    padding: 2rem;
+    position: relative;
+}
+
+.add-to-board {
+    background-color: #FFFFFF;
+    font-weight: bolder;
+    font-size: 1rem;
+    border: 1px #FFFFFF solid;
+    border-radius: 1.5rem;
+    padding: 0.5rem 1rem;
+    position: absolute;
+    bottom: -10%;
+    left: 20%;
+    z-index: 200;
+    cursor: pointer;
+}
+
+.add-to-board:hover {
+    color: rgb(43, 42, 42);
+}
+
+.noHover {
+    pointer-events: none;
+}
+
+.card-post-section{
+    display: flex;
+    flex-wrap: wrap;
+}

@@ -1,0 +1,93 @@
+ .create-post-main-section{
+    background-color: #FFFFFF;
+    max-width: 45rem;
+    width: 90%;
+    border-radius: 1rem;
+    box-shadow: 0.1rem 0.1rem 0.1rem 0.1rem  #b8b6b6;
+    margin: 0 auto;
+    z-index: 1000;
+    position:absolute ;
+    top: 25%;
+    left: 30%;
+    padding: 1.5rem;
+
+}
+.create-post-main-section header, .button-board-section{
+    padding-left: 1rem;
+}
+
+.add-media-section{
+    display: flex;
+
+}
+
+.add-media-section span{
+    margin-right: 0.5rem;
+}
+
+.text-area-section{
+    margin: 0.7rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.text-area-section textarea{
+    width: 40rem;
+    height: 20rem;
+}
+
+.button-board-section{
+   display: flex;
+   align-items: center;
+   font-size: 2rem;
+
+}
+
+.post-button{
+    margin-right: 0.5rem;
+    background-color: #29C0FA;
+    color: white;
+    padding: 0.7rem 1rem;
+    border-radius: 0.5rem;
+    border: none;
+}
+
+.post-button:hover{
+    cursor: pointer;
+    background-color: #0c88b9;
+}
+
+.discard-button{
+    border: none;
+    background-color: transparent;
+    color: #29C0FA;
+}
+
+.discard-button:hover{
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+.added-post-main-section{
+    background-color: white;
+    width: 20rem;
+    padding: 1rem;
+    border-radius: 1rem;
+    margin-left: 1rem;
+    margin-top: 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    word-break: break-all;
+    
+}
+
+.cross-icon{
+    background-color: #13a5df;
+    color: white;
+    font-weight: bold;
+    border-radius: 50%;
+    padding: 0.5rem 0.7rem;
+    cursor: pointer;
+}

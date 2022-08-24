@@ -1,0 +1,35 @@
+.login-signup-card{
+    width: 90%;
+    max-width: 40rem;
+    padding: 1rem 10rem 8rem 10rem;
+    background-color: white;
+    border-radius: 1rem;
+    box-shadow: 0.1rem 0.1rem 0.1rem 0.1rem #c0bebe;
+    margin: 7rem auto;
+
+}
+
+.login-signup-card h2{
+    text-align: center;
+}
+
+.login-signup-card button {
+    display: block;
+    background-color: rgb(196, 192, 192);
+    border-radius: 1rem;
+    border: none;
+    color: black;
+    font-weight: bold;
+    font-size: 1rem;
+    padding: 1rem;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 1rem auto;
+}
+
+.login-signup-card button img {
+    max-width: 2rem;
+    margin-right: 1rem;
+}
