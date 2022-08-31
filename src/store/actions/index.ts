@@ -1,17 +1,25 @@
 import { ActionTypes } from './actionTypes'
 import axios from 'axios'
-import { Api } from './http-url'
+import { API } from './apis'
 import { Action } from './actionsTsTypes'
 import { Dispatch } from 'redux'
 import { taskTileDataFormatType } from '../../components/utilities/constants'
-import { db } from '../../Firebase'
-import { ref, onValue, remove, update,child, push } from 'firebase/database'
+import { db, storage } from '../../Firebase'
+import { ref, onValue, remove, update} from 'firebase/database'
+import { ref as refStorage, uploadBytes, getDownloadURL, listAll,deleteObject } from "firebase/storage"
 
 export const showNewBoardAction = (value: boolean) => {
     return {
         type: ActionTypes.SHOW_BOARD,
         payload: value
     }
+}
+
+export const showImageModalAction = (value: boolean) => {
+  return {
+      type: ActionTypes.SHOW_IMAGE_MODAL,
+      payload: value
+  }
 }
 
 export const login = (userInfo:{}, user_id: string, displayName: string ) => {
@@ -38,18 +46,31 @@ export const login = (userInfo:{}, user_id: string, displayName: string ) => {
 
   //Read Data
 
-  export const fetchData = () => async(dispatch: Dispatch<Action>, getState: () => any) => {
-    const userDisplayName = getState().authReducer['displayName']
+  export const fetchData = () => async(dispatch: Dispatch<Action>) => {
+
     dispatch({
       type: ActionTypes.IS_LOADING
     })
-    let array: Array<any> = []
+    const imageUrls:any = []
+    const imageListRef = refStorage(storage, 'images/')
+
+    const fetchingImages = await listAll(imageListRef)
+    fetchingImages.items.forEach(async(item)=> {
+      const url = await getDownloadURL(item)
+      imageUrls.push(url)
+    })
     try{
-      onValue(ref(db),(snapshot)=>{
-        const data = snapshot.val()
+        onValue(ref(db),async(snapshot)=>{
+        let array: Array<any> = []
+        const data = await snapshot.val()
          for(const key in data?.boards){
-        let tempObj = {bEKey: key, ...data?.boards[key].boardData, creator:userDisplayName}
-        array.push(tempObj)
+            let tempObj = {bEKey: key, ...data?.boards[key].boardData}
+            imageUrls.length && imageUrls.forEach((item:string) => {
+              if (item.includes(tempObj.idx)){
+                tempObj = {...tempObj, image: item}
+              }
+            })
+            array.push(tempObj)
       }
       dispatch({
         type:ActionTypes.FETCH_DATA,
@@ -67,7 +88,7 @@ export const login = (userInfo:{}, user_id: string, displayName: string ) => {
       type: ActionTypes.IS_LOADING
     })
     try{
-      const data = await axios.post(Api, {boardData})
+      const data = await axios.post(API, {boardData})
         dispatch({
           type: ActionTypes.FORMDATA,
           payload: boardData
@@ -83,10 +104,11 @@ export const login = (userInfo:{}, user_id: string, displayName: string ) => {
   export const deleteBoard = (id:string, updatedArray:Array<{}>) => async(dispatch: Dispatch<Action>, getState: () => any) =>{
     let fetchedArray = getState().dataReducer['formDataArray']
     const addedPostObj = fetchedArray.filter((item:{idx:string}) => item.idx === id)[0]
-
     try {
       remove(ref(db, `boards/${addedPostObj.bEKey}`))
-
+      const desertRef = refStorage(storage, `images/${id}`)
+      const deleteImage = await deleteObject(desertRef)
+      
       dispatch({type: ActionTypes.FORMDATADELETE,
         payload: updatedArray
       })
@@ -100,40 +122,64 @@ export const login = (userInfo:{}, user_id: string, displayName: string ) => {
   }
 
   //Update
-
-  export const addPostToBoard = (id:string, post: string, newPostTime:string)=> async(dispatch: Dispatch<Action>, getState: () => any) =>{
+ //Add Post
+  export const addPostToBoard = (id:string, post: string, newPostTime:string)=> (dispatch: Dispatch<Action>, getState: () => any) =>{
     let fetchedArray = getState().dataReducer['formDataArray']
     const addedPostObj = fetchedArray.filter((item:{idx:string}) => item.idx === id)[0]
-    if(addedPostObj.posts){
+    if(addedPostObj && addedPostObj.posts){
       addedPostObj.posts.push(post)
     }else{
       addedPostObj.posts = [post]
     }
     addedPostObj.lastPostCreated = newPostTime
-    try{
-      update(ref(db, `boards/${addedPostObj.bEKey}/boardData`),{...addedPostObj})
-        dispatch({
-          type: ActionTypes.ADDPOSTTOBOARD,
-          payload: addedPostObj
-        })
-    }catch (e){console.log(e, 'error')}
+    genericPostFunction(dispatch, addedPostObj)
   }
+  // Add Image
+  export const addImageToBoard = (id:string, image:any)=> async(dispatch: Dispatch<Action>, getState: () => any) =>{
+    dispatch({
+      type: ActionTypes.ADDIMAGETOBOARDLOADER,
+      payload: id
+    })
 
-  export const removePostFromBoard = (id:string,updatedPosts:string[])=> async(dispatch: Dispatch<Action>, getState: () => any) =>{
+    let fetchedArray = getState().dataReducer['formDataArray']
+    if(image === null) return 
+    const addedPostObj = fetchedArray.filter((item:{idx:string}) => item.idx === id)[0]
+    try{
+      const imageRef = refStorage(storage,`images/${id}`)
+      const uploadingImage = await uploadBytes(imageRef,image)
+      const url = await getDownloadURL(uploadingImage.ref)
+      addedPostObj.image = url
+      
+      genericPostFunction(dispatch, addedPostObj)
+
+    }catch(e) {console.log(e, 'image upload Issue')}
+  }
+  // Remove Post
+  export const removePostFromBoard = (id:string,updatedPosts:string[])=> (dispatch: Dispatch<Action>, getState: () => any) =>{
     let fetchedArray = getState().dataReducer['formDataArray']
     const addedPostObj = fetchedArray.filter((item:{idx:string}) => item.idx === id)[0]
     addedPostObj.posts = updatedPosts
 
-  
+    genericPostFunction(dispatch, addedPostObj)
+  }
 
-    try {
-      update(ref(db, `boards/${addedPostObj.bEKey}/boardData`),{...addedPostObj})
+  //Generic Update Function
+
+  const genericPostFunction = async (dispatch:Dispatch<Action>, addedPostObj:any) =>{
+  try {
+    await update(ref(db, `boards/${addedPostObj.bEKey}/boardData`),{...addedPostObj})
       dispatch({
-        type: ActionTypes.ADDPOSTTOBOARD,
+        type: ActionTypes.ADDREMOVEPOSTTOBOARD,
         payload: addedPostObj
       })
-      
-    } catch (error) {
-      console.log(error, 'error')
-    }
+      } catch (error) {
+          console.log(error, 'error')
+      }
+
   }
+  // other methods
+    // const dashboarddata = await axios.get(API)
+      // for(const key in dashboarddata.data){
+      //     tempObj = {bEKey: key, ...dashboarddata.data[key].boardData}
+      //     array.push(tempObj)
+      //    }

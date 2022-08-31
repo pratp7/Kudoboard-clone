@@ -9,7 +9,8 @@ type InitialState = {
     formData: {},
     formDataArray: taskTileDataFormatType[]
     isLoading?: boolean,
-    getID: string
+    getID: string,
+    isAddImageLoading:{}
 } 
 
 const pathname = window.location.pathname.split('/')
@@ -19,6 +20,7 @@ const initialState :InitialState = {
     formDataArray: [],
     isLoading: false,
     getID:pathname[pathname.length-1],
+    isAddImageLoading: {}
 
 }
 
@@ -26,11 +28,9 @@ const initialState :InitialState = {
 const dataReducer = (state = initialState, action: Action) => {
     switch(action.type){
         case ActionTypes.FORMDATA:
-            let newArray = [...state.formDataArray, {...action.payload}]
             return {
                 ...state,
                 formData:action.payload,
-                formDataArray: newArray,
                 getID: action.payload.idx,
                 isLoading:false
             }
@@ -44,20 +44,17 @@ const dataReducer = (state = initialState, action: Action) => {
                 ...state,
                 getID:action.payload
             }
-        case ActionTypes.ADDPOSTTOBOARD:
+        case ActionTypes.ADDREMOVEPOSTTOBOARD:
             const findIndex = state.formDataArray.findIndex(item=> item.idx === action.payload.idx)
             return update(state, {
                 formDataArray:{
                     [findIndex]:{$set: action.payload}
+                },
+                isAddImageLoading: {
+                    idx: {$set: ''},
+                    status: {$set: false}
                 }
             })
-        case ActionTypes.REMOVEPOSTFROMBOARD:
-            const findIndexonDelete = state.formDataArray.findIndex(item=> item.idx === action.payload.idx)
-                return update(state, {
-                    formDataArray:{
-                        [findIndexonDelete]:{$set: action.payload}
-                    }
-                })
         case ActionTypes.FETCH_DATA:
             return {
                 ...state,
@@ -71,6 +68,13 @@ const dataReducer = (state = initialState, action: Action) => {
                     isLoading: true
                     
                 }
+        case ActionTypes.ADDIMAGETOBOARDLOADER:
+                return {
+                    ...state,
+                    isAddImageLoading: {idx: action.payload, status: true}
+                        
+                }
+        
         default:
             return state
     }
@@ -81,4 +85,5 @@ export const formDataSelector = (state: RootState) => state.dataReducer['formDat
 export const formDataArraySelector = (state: RootState) => state.dataReducer['formDataArray']
 export const getIdSelector = (state:RootState) => state.dataReducer['getID']
 export const isLoaderSelector = (state:RootState) => state.dataReducer['isLoading']
+export const isAddImageLoaderSelector = (state:RootState) => state.dataReducer['isAddImageLoading']
 export default dataReducer

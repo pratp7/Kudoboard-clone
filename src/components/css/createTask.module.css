@@ -182,12 +182,29 @@
 .task-list-image{
     width: 12rem;
     height: 10rem;
+    position: relative;
+    text-align: center;
 }
 
 .task-list-image img {
     max-width: 100%;
     height: 100%;
     object-fit: cover;
+}
+
+.task-list-image-edit-icon{
+    width: 2rem;
+    height:2rem;
+    position: absolute;
+    top: -10%;
+    left: -20%;
+    cursor: pointer;
+
+}
+
+.task-list-image-edit-icon img {
+    max-width: 100%;
+    z-index: 999;
 }
 
 .new-board-list-section{

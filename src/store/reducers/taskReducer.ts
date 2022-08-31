@@ -3,7 +3,8 @@ import {ActionTypes} from '../actions/actionTypes'
 import {RootState} from './index'
 
 type InitialState = {
-    showNewBoard: boolean
+    showNewBoard: boolean,
+    showImageModal: boolean
 }
 
 type Action = {
@@ -12,7 +13,8 @@ type Action = {
 }
 
 const initialState : InitialState  = {
-    showNewBoard: false
+    showNewBoard: false,
+    showImageModal: false
 }
 
 const taskReducer = (state = initialState, action: Action) => {
@@ -22,6 +24,11 @@ const taskReducer = (state = initialState, action: Action) => {
                 ...state,
                 showNewBoard: action.payload
             }
+        case ActionTypes.SHOW_IMAGE_MODAL:
+                return {
+                    ...state,
+                    showImageModal: action.payload
+                }
         default:
             return state
     }
@@ -29,4 +36,5 @@ const taskReducer = (state = initialState, action: Action) => {
 }
 
 export const newBoardSelector = (state: RootState) => state.task['showNewBoard']
+export const imageModalSelector = (state: RootState) => state.task['showImageModal']
 export default taskReducer

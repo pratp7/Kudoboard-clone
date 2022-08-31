@@ -31,15 +31,9 @@ interface GetIDtoViewBoard {
     payload: {}
 
 }
-interface AddPostToBoard {
-    type: ActionTypes.ADDPOSTTOBOARD
+interface ADDREMOVEPOSTTOBOARD {
+    type: ActionTypes.ADDREMOVEPOSTTOBOARD
     payload: taskTileDataFormatType
-
-}
-interface RemovePostFromBoard {
-    type: ActionTypes.REMOVEPOSTFROMBOARD
-    payload: taskTileDataFormatType
-
 
 }
 
@@ -52,8 +46,12 @@ interface IsLoading {
     type: ActionTypes.IS_LOADING
 }
 
+interface AddImageToBoard{
+    type: ActionTypes.ADDIMAGETOBOARDLOADER,
+    payload: string
+}
 
 
 
 
-export type Action =  ShowNewBoardAction |Login|Logout|FormDataSave|FormDataArrayTaskDelete|GetIDtoViewBoard|AddPostToBoard|RemovePostFromBoard|FetchAction|IsLoading
+export type Action =  ShowNewBoardAction |Login|Logout|FormDataSave|FormDataArrayTaskDelete|GetIDtoViewBoard|ADDREMOVEPOSTTOBOARD|FetchAction|IsLoading|AddImageToBoard

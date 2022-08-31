@@ -36,10 +36,6 @@ const CreateBoardPost = ({addPostHandler}:Props) => {
     <div className={classes['create-post-main-section']}>
       <header>
         <h1>Add a Post</h1>
-        <section className={classes['add-media-section']}>
-          <span>Add Image</span>
-          <span>Add Video</span>
-        </section>
       </header>
       <section className={classes['text-area-section']}>
         <textarea name='post area' id='post area' required value={message} onChange={messageHandler}></textarea>

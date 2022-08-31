@@ -8,22 +8,19 @@ import LoginSignup from './components/Login-signup'
 import {Routes, Route,Navigate} from 'react-router-dom'
 import PrivateRoutes from './components/PrivateRoutes'
 import {useDispatch, useSelector} from 'react-redux'
-import { fetchData, logout } from './store/actions'
-import { bindActionCreators } from 'redux'
-import {isLoaderSelector, formDataArraySelector} from './store/reducers/datareducer'
+import { logout } from './store/actions'
+import {isLoaderSelector} from './store/reducers/datareducer'
 import Loader from './components/utilities/Loader'
-import { taskTileDataFormatType } from './components/utilities/constants'
+import { bindActionCreators } from 'redux'
+import { fetchData } from './store/actions'
+import {userSelector} from './store/reducers/authreducer'
 
 function App() {
   const publicPathNames: string[] = ['/', '/login-page', '/boards/create']
   const dispatch = useDispatch()
-  const fetchDataFunc = bindActionCreators(fetchData, dispatch)
   const isLoading = useSelector(isLoaderSelector)
-  const boardDetails: taskTileDataFormatType[] = useSelector(formDataArraySelector)
-  
-  useEffect(()=> {
-    fetchDataFunc()
-  }, [boardDetails.length])
+  const user = useSelector(userSelector)
+  const fetchDataFunc = bindActionCreators(fetchData, dispatch)
 
   
   useEffect(()=> {
@@ -31,6 +28,15 @@ function App() {
       dispatch(logout())
     }
   }, [window.location.pathname])
+
+  useEffect(()=> {
+    if(user){
+      fetchDataFunc()
+    }
+  }, [user])
+
+
+
   return (
       <div>
         <Routes>

@@ -3,20 +3,24 @@ import '../utilities/utilities.css'
 import classes from '../css/createTask.module.css'
 import TaskListCard from './task-list-card'
 import HeaderTask from './Header-Task'
-import {formDataArraySelector} from '../../store/reducers/datareducer'
+import {formDataArraySelector, isAddImageLoaderSelector} from '../../store/reducers/datareducer'
 import {useSelector, useDispatch} from 'react-redux'
 import {getIDtoViewBoard, deleteBoard} from '../../store/actions'
 import {useNavigate} from 'react-router-dom'
 import {bindActionCreators} from 'redux'
 
 type Props = {
-    newboardHandler?: () => void
+    newboardHandler?: () => void,
+    imageModalHandler?: (id:string)=> void
 }
-const TaskSection = ({newboardHandler = ()=>{}}:Props) => {
+
+const emptyFunc = ():void => {}
+const TaskSection = ({newboardHandler = emptyFunc, imageModalHandler = emptyFunc }:Props) => {
     const dispatch = useDispatch()
     const navigate = useNavigate()
     const formDataArray: Array<any> = useSelector(formDataArraySelector)
     const deleteBoardFunc = bindActionCreators(deleteBoard, dispatch)
+    const isImageLoading = useSelector(isAddImageLoaderSelector)
 
     const createNewBoardOnEmptyList : React.ReactNode = (
         <>
@@ -34,6 +38,10 @@ const TaskSection = ({newboardHandler = ()=>{}}:Props) => {
         deleteBoardFunc(id, newArray)
 
     }
+
+    const editClickHandler = (id:string):void =>{
+        imageModalHandler(id)
+    }
   return (
     <>
      <HeaderTask newboardHandler={newboardHandler} />
@@ -45,7 +53,7 @@ const TaskSection = ({newboardHandler = ()=>{}}:Props) => {
         </div>
         <section className={classes['list-section']}>
             {formDataArray.length ? formDataArray.map((item, idx) => {
-                return <TaskListCard {...item} key={idx} idx={item.idx} viewBoardHandler={viewBoardHandler} deleteBoardHandler={deleteBoardHandler}/>
+                return <TaskListCard {...item} key={idx} viewBoardHandler={viewBoardHandler} deleteBoardHandler={deleteBoardHandler} editClickHandler={editClickHandler} isImageLoading={isImageLoading}/>
             }):createNewBoardOnEmptyList}
         </section>
     </div>

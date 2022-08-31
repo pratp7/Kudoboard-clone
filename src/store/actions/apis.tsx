@@ -1,0 +1,1 @@
+export const API = `https://kudoboardauth-default-rtdb.firebaseio.com/boards.json`

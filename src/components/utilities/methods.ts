@@ -1,13 +1,23 @@
 
-import { showNewBoardAction } from '../../store/actions'
+import { showNewBoardAction, showImageModalAction } from '../../store/actions'
 
 
 export const newboardHandler = (dispatch: any): void => {
   dispatch(showNewBoardAction(true))
+  document.body.style.overflow = 'hidden'
 }
 
+export const imageModalHandler = (dispatch: any): void => {
+  dispatch(showImageModalAction(true))
+  document.body.style.overflow = 'hidden'
+}
 export const closeModal = (dispatch: any): void => {
   dispatch(showNewBoardAction(false))
+  document.body.style.overflow = 'unset'
+}
+export const imageCloseModal = (dispatch: any): void => {
+  dispatch(showImageModalAction(false))
+  document.body.style.overflow = 'unset'
 }
 
 export function timeSince(date: Date) {

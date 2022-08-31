@@ -3,6 +3,7 @@ export type forUserType = {idx: number,firstName:string, lastName:string}
 export type taskTileDataFormatType = {
     idx:string
     title: string,
+    image?: string,
     forUser: forUserType[],
     creator?: string,
     created?: string,
@@ -18,7 +19,8 @@ const taskTileDataFormat:taskTileDataFormatType = {
     creator: '',
     created : '',
     posts : [],
-    lastPostCreated:''
+    lastPostCreated:'',
+    image:''
 }
 
 export default taskTileDataFormat

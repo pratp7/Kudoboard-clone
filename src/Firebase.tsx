@@ -1,6 +1,7 @@
 import { initializeApp } from 'firebase/app'
 import {getAuth,GoogleAuthProvider, signInWithPopup, signOut} from 'firebase/auth'
 import { getDatabase } from 'firebase/database'
+import { getStorage } from 'firebase/storage'
 
 type firebaseConfigType = {
   apiKey: string,
@@ -22,7 +23,7 @@ const firebaseConfig : firebaseConfigType = {
 const app = initializeApp(firebaseConfig)
 export const auth = getAuth(app)
 export const db:any =  getDatabase(app)
-
+export const storage = getStorage(app)
 const provider = new GoogleAuthProvider()
 
 export const signInwithGoogle = () => signInWithPopup(auth, provider)
