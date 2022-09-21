@@ -5,7 +5,7 @@ import LandingPage from './components/LandingPage'
 import CreateBoardSection from './components/create-board'
 import CreateWihtoutLogin from './components/LandingPage/create-without-login'
 import LoginSignup from './components/Login-signup'
-import {Routes, Route,Navigate} from 'react-router-dom'
+import {Routes, Route,Navigate, useLocation} from 'react-router-dom'
 import PrivateRoutes from './components/PrivateRoutes'
 import {useDispatch, useSelector} from 'react-redux'
 import { logout } from './store/actions'
@@ -16,7 +16,7 @@ import { fetchData } from './store/actions'
 import {userSelector} from './store/reducers/authreducer'
 
 function App() {
-  const publicPathNames: string[] = ['/', '/login-page', '/boards/create']
+  const location = useLocation()
   const dispatch = useDispatch()
   const isLoading = useSelector(isLoaderSelector)
   const user = useSelector(userSelector)
@@ -24,10 +24,11 @@ function App() {
 
   
   useEffect(()=> {
-    if(publicPathNames.includes(window.location.pathname)){
+    const publicPathNames: string[] = ['/', '/login-page', '/boards/create']
+    if(publicPathNames.includes(location.pathname)){
       dispatch(logout())
     }
-  }, [window.location.pathname])
+  }, [location.pathname, dispatch])
 
   useEffect(()=> {
     if(user){
@@ -44,9 +45,9 @@ function App() {
           <Route path='/login-page' element={<LoginSignup/>}/>
           <Route path='/boards/create' element = {<CreateWihtoutLogin/>} />
           <Route element={<PrivateRoutes/>}>
-              <Route path='/dashboard' element={!isLoading? <CreateTask/>:<Loader/>}/>
-              <Route path='/dashboard/createboard/:id' element = {!isLoading? <CreateBoardSection/>:<Loader/>}/>
-              <Route path="*" element={<Navigate to='/dashboard' replace />}/>
+             <Route path='/dashboard' element={!isLoading? <CreateTask/>:<Loader/>}/>
+             <Route path='/dashboard/createboard/:id' element = {!isLoading? <CreateBoardSection/>:<Loader/>}/>
+             <Route path="*" element={<Navigate to='/dashboard' replace />}/>
           </Route>
           
         </Routes>

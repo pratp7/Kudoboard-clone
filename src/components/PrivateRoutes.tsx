@@ -1,14 +1,14 @@
-import { useSelector, useDispatch } from 'react-redux'
-import { Navigate, Outlet } from 'react-router-dom'
-import { userSelector, isUserLogged } from '../store/reducers/authreducer'
+import { useSelector } from 'react-redux'
+import { Navigate, Outlet, useLocation } from 'react-router-dom'
+import { userSelector} from '../store/reducers/authreducer'
 
 
 const PrivateRoutes = () => {
+  const location = useLocation()
     const user = useSelector(userSelector)
-    const isLogged = useSelector(isUserLogged)
     
     return (
-        user ? <Outlet/> : <Navigate to='/'/>
+        user ? <Outlet/> : <Navigate to='/' state={{from:location}} replace/>
       )
 }
 

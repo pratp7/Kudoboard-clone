@@ -76,7 +76,7 @@ const CreateTaskCard = ({closeModal}: Props) => {
     })
   }
   return (
-    <div className={classes['create-task-card']}>
+    <div className={!user ? classes['create-task-card']:`${classes['create-task-card']} ${classes['create-task-card-position']}` }>
       <header>
         <h1>Create new Kudoboard</h1>
         {closeModal && <img src={closeIcon} alt="close-icon" onClick={closeModal} />}

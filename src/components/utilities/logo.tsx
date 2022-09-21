@@ -1,5 +1,5 @@
 import React from 'react'
-import titleLogo from '../../images/kudoboard-logo.png'
+import titleLogo from '../../images/qbkudosLogo.png'
 import './utilities.css'
 import { useNavigate } from 'react-router-dom'
 import { useSelector } from 'react-redux'

@@ -1,12 +1,14 @@
 .common-layout{
  display: flex;
  justify-content: space-around;
- padding: 0.2rem 1rem;;
+ padding: 0.2rem 1rem;
+ flex-wrap: wrap;
 }
 
 .logo-kudoboard {
     cursor: pointer;
 }
+
 
 .signin, .create-signin{
     display: flex;
@@ -24,7 +26,7 @@
 }
 
 .signin button:hover {
-    color: #29C0FA;
+    color: #922F4D;
 }
 
 .heading-info{
@@ -32,7 +34,6 @@
     flex-direction: column;
     justify-content: flex-start;
     align-items:flex-start;
-    width: 50%;
     max-width: 35rem;
     margin-left: 12rem;
 }
@@ -54,7 +55,7 @@
 }
 
 .create-kudoboard{
-    background-color: #29C0FA;
+    background-color:#922F4D ;
     padding: 0.5rem 1.5rem;
     border-radius: 1rem;
     color: #FFFFFF !important;
@@ -85,7 +86,7 @@
 }
 
 .create-without-login, .signinpage{
-    background: linear-gradient(#129EFA, #29C0FA);
+    background: linear-gradient(#922F4D, #eb6089);
     width: 100vw;
     height: 100vh;
 }
@@ -181,9 +182,9 @@
 .select-image{
     padding: 1rem;
     background-color: transparent;
-    border: 1px #129EFA solid;
+    border: 1px #922F4D solid;
     border-radius: 0.7rem;
-    color: #129EFA;
+    color: #922F4D;
     margin-top: 1rem;
     cursor: pointer;
 }
@@ -207,3 +208,37 @@
     border: none;
     border-radius: 0.5rem;
 }
+.loading {
+    filter: blur(10px);
+    clip-path: inset(0);
+  }
+  .loaded {
+    filter: blur(0px);
+    transition: filter 0.5s linear;
+  }
+
+  @media all and (max-width:800px){
+    .layout-landing-page{
+        flex-direction: column;
+    }
+    .heading-info{
+        width: 100%;   
+        margin-left: 1rem;
+    }
+    .heading-info h1 {
+        font-size: 36px;
+    }
+    .card-section{
+        grid-template-columns:auto
+        
+    }
+    .card-layout{
+        max-width: 16rem;
+    }
+  }
+
+  @media all and (max-width:1500px){
+    .heading-info{
+        margin-left: 1rem
+    }
+  }

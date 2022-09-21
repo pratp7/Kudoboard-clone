@@ -7,7 +7,7 @@ export type taskTileDataFormatType = {
     forUser: forUserType[],
     creator?: string,
     created?: string,
-    posts: string[],
+    posts:{post:string, image:string, idx:string}[],
     lastPostCreated: string
 }
 

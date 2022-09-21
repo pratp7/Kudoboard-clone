@@ -11,7 +11,7 @@ type Props = {
 const Card = ({image, title, name, idx, className}: Props) => {
   return (
     <div className={`card-layout ${className}`}>
-        <img src={image} alt={`image ${idx}`} />
+        <img src={image} alt={`im ${idx}`} />
         <p className='text'>{title}</p>
         <p className='text username'>From {name}</p>
     </div>

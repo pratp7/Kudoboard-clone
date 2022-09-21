@@ -1,9 +1,11 @@
 import React from 'react'
 import classes from '../css/createTask.module.css'
 import defaultImage from '../../images/defaultListImage.png'
+import progImg from '../../images/page-load.jpg'
 import {forUserType} from '../utilities/constants'
 import editIcon from '../../images/edit-icon.png'
 import Loader from '../utilities/Loader'
+import ProgressiveImage from '../utilities/progressiveImage'
 type Props = {
   idx: string,
   title: string, 
@@ -23,7 +25,8 @@ const TaskListCard = ({title, forUser, creator, created, posts, idx,lastPostCrea
   return (
     <div className={classes['task-list-card']}>
      <figure className={classes['task-list-image']}>
-     {isImageLoading && isImageLoading.idx === idx && isImageLoading.status ?  <Loader/>: <img src={image || defaultImage} alt={title} />}
+     {/* {isImageLoading && isImageLoading.idx === idx && isImageLoading.status ?  <Loader/>: <img src={image || defaultImage} alt={title} className= {classes['task-list-image-styling']}/>} */}
+     {isImageLoading && isImageLoading.idx === idx && isImageLoading.status ?  <Loader/>: <ProgressiveImage src={image || defaultImage} placeholderSrc={progImg} alt={title} className= {classes['task-list-image-styling']} />}
      <figure className={classes['task-list-image-edit-icon']} onClick={() => editClickHandler(idx)}>
       <img src={editIcon} alt='edit--icons' />
      </figure>
@@ -54,7 +57,7 @@ const TaskListCard = ({title, forUser, creator, created, posts, idx,lastPostCrea
       <section className={classes['task-list-section']}>
         <div>
         <p>POSTS </p>
-        <p>{posts && posts.length || 0} (Max of 10)</p>
+        <p>{(posts && posts.length) || 0} (Max of 10)</p>
         </div>
         <div>
         <p>LAST POST ADDED</p>

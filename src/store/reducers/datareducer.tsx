@@ -53,7 +53,8 @@ const dataReducer = (state = initialState, action: Action) => {
                 isAddImageLoading: {
                     idx: {$set: ''},
                     status: {$set: false}
-                }
+                },
+                isLoading:{$set:false}
             })
         case ActionTypes.FETCH_DATA:
             return {

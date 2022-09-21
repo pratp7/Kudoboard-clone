@@ -9,7 +9,7 @@ interface ShowNewBoardAction {
 
 interface Login {
     type: ActionTypes.LOGIN,
-    payload: {userInfo:{}, user_id: string, displayName: string}
+    payload: {userInfo:any, user_id: string, displayName: string}
 
 }
 interface Logout {

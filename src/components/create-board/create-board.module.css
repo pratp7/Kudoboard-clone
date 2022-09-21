@@ -7,7 +7,7 @@
     margin: 0 auto;
     z-index: 1000;
     position:absolute ;
-    top: 25%;
+    top:25%;
     left: 30%;
     padding: 1.5rem;
 
@@ -46,7 +46,7 @@
 
 .post-button{
     margin-right: 0.5rem;
-    background-color: #29C0FA;
+    background-color: #922F4D;
     color: white;
     padding: 0.7rem 1rem;
     border-radius: 0.5rem;
@@ -55,13 +55,13 @@
 
 .post-button:hover{
     cursor: pointer;
-    background-color: #0c88b9;
+    background-color: #7e2942;
 }
 
 .discard-button{
     border: none;
     background-color: transparent;
-    color: #29C0FA;
+    color: #922F4D;
 }
 
 .discard-button:hover{
@@ -76,18 +76,32 @@
     border-radius: 1rem;
     margin-left: 1rem;
     margin-top: 2rem;
-    display: flex;
-    justify-content: space-between;
     align-items: center;
     word-break: break-all;
+    position: relative;
     
+}
+.post-section img{
+    max-width: 100%;
+    object-fit: cover;
 }
 
 .cross-icon{
-    background-color: #13a5df;
+    background-color: #922F4D;
     color: white;
     font-weight: bold;
     border-radius: 50%;
     padding: 0.5rem 0.7rem;
     cursor: pointer;
+    position: absolute;
+    top: 0;
+    left: 93%;
+}
+
+@media all and (max-width:1000px){
+    .create-post-main-section{
+        top: 3rem;
+        left: 2rem;
+        
+    }
 }

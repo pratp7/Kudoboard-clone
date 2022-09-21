@@ -11,12 +11,12 @@ import { bindActionCreators } from 'redux'
 type Props = {
     newboardHandler?: () => void,
     title:string,
-    posts: string[],
+    posts: {post:string, image: string}[],
     displayName: string,
     getID: string
 }
 
-const CreateBoard = ({newboardHandler = ()=>{}, title, posts, displayName, getID}: Props) => {
+const CreateBoard = ({newboardHandler = ()=>{}, title='', posts=[], displayName, getID}: Props) => {
   const [showPostCard, setShowPostCard] = useState(false)
   const dispatch=useDispatch()
   const removePostFromBoardFunc = bindActionCreators(removePostFromBoard, dispatch)
@@ -30,12 +30,12 @@ const CreateBoard = ({newboardHandler = ()=>{}, title, posts, displayName, getID
     removePostFromBoardFunc(getID, updatedPosts)
     
   }
-
   return (
     <>
     {showPostCard && <CreateBoardPost addPostHandler={addPostHandler}/>}
-    <HeaderTask newboardHandler={newboardHandler} />
-    <div className={classes['board-section']}>
+    <div className={showPostCard ?`${classes['dashboard-section-blur']} ${classes['dashboard-section-pointer']}` : `${classes['dashboard-section']}`}>
+      <HeaderTask newboardHandler={newboardHandler} />
+         <div className={classes['board-section']}>
         <header className={classes['board-header']}>
             <h1>{title}</h1>
             <button className={posts.length<10 ? classes['add-to-board']:`${classes['noHover']}`} onClick={()=>addPostHandler(true)} disabled={posts.length >= 10}>
@@ -43,13 +43,14 @@ const CreateBoard = ({newboardHandler = ()=>{}, title, posts, displayName, getID
             </button>    
         </header>
         <section className={classes['card-post-section']}>
-          {posts && posts.length && posts.map((post, idx)=> {
-            return  <AddedCardPost post={post} key={idx} displayName={displayName} idx={idx} removePostHandler={removePostHandler}/>
-          })}
+          {posts && posts.length ? posts.map((item, idx)=> {
+            return  <AddedCardPost post={item?.post} key={idx} displayName={displayName} idx={idx} removePostHandler={removePostHandler} image={item?.image}/>
+          }): null}
         
       </section>
    
     </div>
+  </div>
     </>
   )
 }

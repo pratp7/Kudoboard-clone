@@ -17,11 +17,18 @@
     display: flex;
     justify-content: space-around;
     align-items: center;
+    flex-wrap: wrap;
+    padding: 1rem;
 
 }
 
+.dashboard h1 span {
+    color: #922F4D;
+    font-style: italic;
+}
+
 .new-board-style{
-    background-color: #29C0FA;
+    background-color: #922F4D;
     padding: 0.5rem 1.5rem;
     border-radius: 0.4rem;
     color: #FFFFFF;
@@ -35,7 +42,10 @@
     width: 90%;
     border-radius: 1rem;
     box-shadow: 0.1rem 0.1rem 0.1rem 0.1rem  #b8b6b6;
-    margin: 0 auto;
+    margin: 2rem auto;
+}
+
+.create-task-card-position{
     z-index: 1000;
     position:absolute ;
     top: 25%;
@@ -69,7 +79,7 @@
     text-decoration: none;
     background-color: white;
     border: none;
-    color:#29C0FA;
+    color:#922F4D;
     cursor: pointer;
     font-size: 1rem;
 }
@@ -80,7 +90,7 @@
 
 
 .create-task-form .add-recipient:hover{
-    color: #13a5df;
+    color: #be4469;
     text-decoration: underline;
 }
 
@@ -106,7 +116,7 @@
 }
 
 .cross-icon{
-    background-color: #13a5df;
+    background-color: #922F4D;
     color: white;
     font-weight: bold;
     border-radius: 50%;
@@ -115,7 +125,7 @@
 }
 
 .create-board-button {
-    background-color:#29C0FA;
+    background-color:#922F4D;
     color: #FFFFFF;
     font-weight: bold;
     width: 100%;
@@ -126,12 +136,14 @@
     cursor: pointer;
 }
 .list-section{
-    background-color: #f7f4f4;
+    background: linear-gradient(#922F4D, #eb6089);
+    min-width: 100vw;
+    min-height: 100vh;
     padding: 1rem;
 }
 
 .task-list-card{
-    width: 80%;
+    width: 90%;
     max-width: 70rem;
     background-color: #FFFFFF;
     margin: 1rem auto;
@@ -144,6 +156,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+    flex-wrap: wrap;
 }
 
 .view-board, .delete-board {
@@ -155,12 +168,12 @@
 }
 
 .view-board{
-    color: #29C0FA;
-    border: 1px #29C0FA solid;
+    color: #922F4D;
+    border: 1px #922F4D solid;
 }
 .view-board:hover{
-    border-color: #13a5df;
-    color: #13a5df;
+    border-color: #be4469;
+    color: #be4469;
 }
 
 .delete-board{
@@ -186,7 +199,7 @@
     text-align: center;
 }
 
-.task-list-image img {
+.task-list-image-styling {
     max-width: 100%;
     height: 100%;
     object-fit: cover;
@@ -216,10 +229,13 @@
     background: url('../../images/board-image.jpg');
     width: 100vw;
     height: 100vh;
+    background-size: cover;
+    background-repeat: no-repeat;
+
 }
 
 .board-header{
-    background-color: #144E76;
+    background-color: #922F4D;
     color: #FFFFFF;
     text-align: center;
     padding: 2rem;
@@ -251,4 +267,14 @@
 .card-post-section{
     display: flex;
     flex-wrap: wrap;
+}
+
+@media all and (max-width:950px){
+    .task-list-card{
+        grid-template-columns: 100%;
+    }
+    .create-task-card-position{
+        top: 3rem;
+        left: 2rem;
+    }
 }

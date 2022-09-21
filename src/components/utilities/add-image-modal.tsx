@@ -1,8 +1,8 @@
-import React, { useEffect, useState, useCallback } from 'react'
+import React, { useEffect, useState } from 'react'
 import './utilities.css'
 import closeIcon from '../../images/closeicon.png'
 import classes from '../create-board/create-board.module.css'
-import {useDropzone} from 'react-dropzone'
+import {useDropzone, FileWithPath} from 'react-dropzone'
 import {bindActionCreators} from 'redux'
 import {addImageToBoard} from '../../store/actions'
 import {useDispatch} from 'react-redux'
@@ -30,9 +30,9 @@ const AddImageModal = ({imageCloseModal, idx}:Props) => {
   }
 
   useEffect(()=>{
-    let addImage = acceptedFiles.map((file)=> (
+    let addImage = acceptedFiles.map((file:FileWithPath)=> (
       <section key={file.name} >
-      <div className='close-icon-image-section'><img src={closeIcon} alt="remove-image" onClick={removeImage} /></div>
+      <div className='close-icon-image-section'><img src={closeIcon} alt="remove" onClick={removeImage} /></div>
       <div className='selected-Image-Preview'>
        <img src={URL.createObjectURL(file)} alt={file.name} />
       </div>

@@ -4,27 +4,26 @@ import {Action} from '../actions/actionsTsTypes'
 
 type InitialState = {
     user_id: string,
-    userInfo: {},
     displayName : string
     userLogged?:boolean
 }
 
 const initialState : InitialState = {
-   user_id: localStorage.getItem('user_id') || '',
-   userInfo: {},
+   user_id: localStorage.getItem('token') || '',
    displayName: localStorage.getItem('displayName') || ''
 }
 
 const authReducer = (state = initialState, action:Action) => {
     switch(action.type) {
         case ActionTypes.LOGIN :
-            localStorage.setItem('user_id', action.payload?.user_id || '')
             localStorage.setItem('displayName', action.payload?.displayName || '')
+            localStorage.setItem('token', action.payload?.userInfo.oauthAccessToken || '')
+            
             return {
                 ...state,
-                user_id: action.payload?.user_id,
-                userInfo: action.payload?.userInfo,
-                displayName: action.payload?.displayName
+                user_id:  action.payload?.userInfo.oauthAccessToken,
+                displayName: action.payload?.displayName,
+                expiresIn: action.payload?.userInfo.oauthExpireIn
             }
         case ActionTypes.LOGOUT :
             localStorage.clear()
@@ -41,7 +40,6 @@ const authReducer = (state = initialState, action:Action) => {
 
 }
 export const userSelector = (state:RootState) => state.authReducer['user_id'] 
-export const userInfoSelector = (state:RootState) => state.authReducer['userInfo'] 
 export const displayNameSelector = (state:RootState) => state.authReducer['displayName'] 
 export const isUserLogged = (state:RootState) => state.authReducer['userLogged'] 
 export default authReducer

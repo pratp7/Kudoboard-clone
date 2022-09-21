@@ -1,7 +1,6 @@
 import React from 'react'
 import Header from '../utilities/Header'
 import Createkudoboard from '../utilities/create-kudoboard'
-import classes from './index.module.css'
 import '../utilities/utilities.css'
 import cardArray from '../../images/landing-page-card'
 import Card from '../utilities/card'
@@ -10,10 +9,10 @@ const index = () => {
   return (
     <div>
         <Header/>
-        <section className='common-layout'>
+        <section className='common-layout layout-landing-page'>
             <section className='heading-info'>
-                <h1>Kudoboard is the Perfect Group Card for Special Occasions</h1>
-                <p>Celebrate someone with an online group card filled with messages, GIFs, photos, & videos!</p>
+                <h1>QBKudos is the Perfect Group Card for Special Occasions</h1>
+                <p>Celebrate someone with an online group card filled with messages and photos</p>
                 <Createkudoboard/>
             </section>
             <section className='card-section'>

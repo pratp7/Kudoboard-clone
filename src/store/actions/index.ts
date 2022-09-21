@@ -6,7 +6,11 @@ import { Dispatch } from 'redux'
 import { taskTileDataFormatType } from '../../components/utilities/constants'
 import { db, storage } from '../../Firebase'
 import { ref, onValue, remove, update} from 'firebase/database'
-import { ref as refStorage, uploadBytes, getDownloadURL, listAll,deleteObject } from "firebase/storage"
+import { ref as refStorage, uploadBytes, getDownloadURL,deleteObject } from "firebase/storage"
+import { signInwithGoogle } from '../../Firebase'
+import { bindActionCreators } from 'redux'
+import { NavigateFunction } from 'react-router-dom'
+
 
 export const showNewBoardAction = (value: boolean) => {
     return {
@@ -22,7 +26,7 @@ export const showImageModalAction = (value: boolean) => {
   }
 }
 
-export const login = (userInfo:{}, user_id: string, displayName: string ) => {
+const login = (userInfo:{}, user_id: string, displayName: string ) => {
     return {
       type: ActionTypes.LOGIN,
       payload: {userInfo, user_id, displayName}
@@ -42,6 +46,19 @@ export const login = (userInfo:{}, user_id: string, displayName: string ) => {
     }
   }
 
+  //login action 
+
+  export const loginAction = (navigate: NavigateFunction) => (dispatch: Dispatch<Action>) => {
+    const loginFunc = bindActionCreators(login, dispatch)
+    signInwithGoogle().then((res:any) => {
+      loginFunc(res._tokenResponse, res._tokenResponse.email, res._tokenResponse.displayName)
+      navigate('/dashboard')
+    }).catch((error) => {
+      console.log(error.message)
+    })
+
+  }
+
   //action creators 
 
   //Read Data
@@ -51,25 +68,25 @@ export const login = (userInfo:{}, user_id: string, displayName: string ) => {
     dispatch({
       type: ActionTypes.IS_LOADING
     })
-    const imageUrls:any = []
-    const imageListRef = refStorage(storage, 'images/')
+    // const imageUrls:any = []
+    // const imageListRef = refStorage(storage, 'images/')
 
-    const fetchingImages = await listAll(imageListRef)
-    fetchingImages.items.forEach(async(item)=> {
-      const url = await getDownloadURL(item)
-      imageUrls.push(url)
-    })
+    // const fetchingImages = await listAll(imageListRef) //import listAll from firabase storage
+    // fetchingImages.items.forEach(async(item)=> {
+    //   const url = await getDownloadURL(item)
+    //   imageUrls.push(url)
+    // })
     try{
         onValue(ref(db),async(snapshot)=>{
         let array: Array<any> = []
         const data = await snapshot.val()
          for(const key in data?.boards){
             let tempObj = {bEKey: key, ...data?.boards[key].boardData}
-            imageUrls.length && imageUrls.forEach((item:string) => {
-              if (item.includes(tempObj.idx)){
-                tempObj = {...tempObj, image: item}
-              }
-            })
+            // imageUrls.length && imageUrls.forEach((item:string) => {
+            //   if (item.includes(tempObj.idx)){
+            //     tempObj = {...tempObj, image: item}
+            //   }
+            // })
             array.push(tempObj)
       }
       dispatch({
@@ -77,6 +94,7 @@ export const login = (userInfo:{}, user_id: string, displayName: string ) => {
         payload: array
       })
       })
+      
   }catch(e) {
       console.log(e, 'error')
     }
@@ -88,7 +106,7 @@ export const login = (userInfo:{}, user_id: string, displayName: string ) => {
       type: ActionTypes.IS_LOADING
     })
     try{
-      const data = await axios.post(API, {boardData})
+      await axios.post(API, {boardData})
         dispatch({
           type: ActionTypes.FORMDATA,
           payload: boardData
@@ -106,8 +124,11 @@ export const login = (userInfo:{}, user_id: string, displayName: string ) => {
     const addedPostObj = fetchedArray.filter((item:{idx:string}) => item.idx === id)[0]
     try {
       remove(ref(db, `boards/${addedPostObj.bEKey}`))
-      const desertRef = refStorage(storage, `images/${id}`)
-      const deleteImage = await deleteObject(desertRef)
+      if(addedPostObj?.image){
+        const desertRef = refStorage(storage, `images/${id}`)
+        await deleteObject(desertRef)
+      }
+      
       
       dispatch({type: ActionTypes.FORMDATADELETE,
         payload: updatedArray
@@ -123,17 +144,29 @@ export const login = (userInfo:{}, user_id: string, displayName: string ) => {
 
   //Update
  //Add Post
-  export const addPostToBoard = (id:string, post: string, newPostTime:string)=> (dispatch: Dispatch<Action>, getState: () => any) =>{
+  export const addPostToBoard = (id:string, post: string, newPostTime:string, imageUpload?:any)=> async(dispatch: Dispatch<Action>, getState: () => any) =>{
+    dispatch({
+      type: ActionTypes.IS_LOADING
+    })
     let fetchedArray = getState().dataReducer['formDataArray']
+    let url = ''
     const addedPostObj = fetchedArray.filter((item:{idx:string}) => item.idx === id)[0]
+    dispatch({
+      type: ActionTypes.ADDIMAGETOBOARDLOADER,
+      payload: addedPostObj.posts?.length || 0
+    })
+    if(imageUpload){
+    url = await addImageGenericFunction(imageUpload, 'posts', `${id}-${addedPostObj.posts?.length || 0}`) || ''
+    }
     if(addedPostObj && addedPostObj.posts){
-      addedPostObj.posts.push(post)
+      addedPostObj.posts.push({post: post, image:url || ''})
     }else{
-      addedPostObj.posts = [post]
+      addedPostObj.posts = [{post: post, image:url || ''}]
     }
     addedPostObj.lastPostCreated = newPostTime
     genericPostFunction(dispatch, addedPostObj)
   }
+
   // Add Image
   export const addImageToBoard = (id:string, image:any)=> async(dispatch: Dispatch<Action>, getState: () => any) =>{
     dispatch({
@@ -142,20 +175,14 @@ export const login = (userInfo:{}, user_id: string, displayName: string ) => {
     })
 
     let fetchedArray = getState().dataReducer['formDataArray']
-    if(image === null) return 
     const addedPostObj = fetchedArray.filter((item:{idx:string}) => item.idx === id)[0]
-    try{
-      const imageRef = refStorage(storage,`images/${id}`)
-      const uploadingImage = await uploadBytes(imageRef,image)
-      const url = await getDownloadURL(uploadingImage.ref)
-      addedPostObj.image = url
-      
-      genericPostFunction(dispatch, addedPostObj)
-
-    }catch(e) {console.log(e, 'image upload Issue')}
+    let url = await addImageGenericFunction(image, 'images', id)
+    addedPostObj.image = url
+    genericPostFunction(dispatch, addedPostObj)
   }
+
   // Remove Post
-  export const removePostFromBoard = (id:string,updatedPosts:string[])=> (dispatch: Dispatch<Action>, getState: () => any) =>{
+  export const removePostFromBoard = (id:string,updatedPosts:{}[])=> (dispatch: Dispatch<Action>, getState: () => any) =>{
     let fetchedArray = getState().dataReducer['formDataArray']
     const addedPostObj = fetchedArray.filter((item:{idx:string}) => item.idx === id)[0]
     addedPostObj.posts = updatedPosts
@@ -163,7 +190,7 @@ export const login = (userInfo:{}, user_id: string, displayName: string ) => {
     genericPostFunction(dispatch, addedPostObj)
   }
 
-  //Generic Update Function
+  //Generic Update Functions
 
   const genericPostFunction = async (dispatch:Dispatch<Action>, addedPostObj:any) =>{
   try {
@@ -177,6 +204,18 @@ export const login = (userInfo:{}, user_id: string, displayName: string ) => {
       }
 
   }
+
+  const addImageGenericFunction = async (imageObj: any, folderName: string, id:any) => {
+    if(imageObj === null) return 
+    try{
+      const imageRef = refStorage(storage,`${folderName}/${id}`)
+      const uploadingImage = await uploadBytes(imageRef,imageObj)
+      const url = await getDownloadURL(uploadingImage.ref)
+      return url
+
+    }catch(e) {console.log(e, 'image upload Issue')}
+  }
+  
   // other methods
     // const dashboarddata = await axios.get(API)
       // for(const key in dashboarddata.data){

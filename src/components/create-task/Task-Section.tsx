@@ -1,4 +1,3 @@
-import React from 'react'
 import '../utilities/utilities.css'
 import classes from '../css/createTask.module.css'
 import TaskListCard from './task-list-card'
@@ -8,7 +7,7 @@ import {useSelector, useDispatch} from 'react-redux'
 import {getIDtoViewBoard, deleteBoard} from '../../store/actions'
 import {useNavigate} from 'react-router-dom'
 import {bindActionCreators} from 'redux'
-
+import {displayNameSelector} from '../../store/reducers/authreducer'
 type Props = {
     newboardHandler?: () => void,
     imageModalHandler?: (id:string)=> void
@@ -21,7 +20,7 @@ const TaskSection = ({newboardHandler = emptyFunc, imageModalHandler = emptyFunc
     const formDataArray: Array<any> = useSelector(formDataArraySelector)
     const deleteBoardFunc = bindActionCreators(deleteBoard, dispatch)
     const isImageLoading = useSelector(isAddImageLoaderSelector)
-
+    const displayName = useSelector(displayNameSelector)
     const createNewBoardOnEmptyList : React.ReactNode = (
         <>
         <div className={classes['new-board-list-section']}>Create New Board</div>
@@ -48,7 +47,7 @@ const TaskSection = ({newboardHandler = emptyFunc, imageModalHandler = emptyFunc
       <hr />
     <div>
         <div className={classes['dashboard']}>
-            <h1>Dashboard</h1>
+            <h1>Dashboard of <span>{displayName || ''}</span></h1>
             <button className={classes['new-board-style']} onClick= {newboardHandler} >+ New Board</button>
         </div>
         <section className={classes['list-section']}>

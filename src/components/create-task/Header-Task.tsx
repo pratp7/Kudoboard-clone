@@ -37,4 +37,4 @@ const HeaderTask = ({newboardHandler}: Props) => {
   )
 }
 
-export default HeaderTask
+export default React.memo(HeaderTask)

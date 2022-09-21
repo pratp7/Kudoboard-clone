@@ -1,4 +1,4 @@
-import React, {cloneElement, useState} from 'react'
+import React, {cloneElement, useState, useCallback} from 'react'
 import classes from '../css/createTask.module.css'
 import CreateTaskCard from '../create-task/createTask-card'
 import { useSelector, useDispatch } from 'react-redux'
@@ -17,10 +17,14 @@ const HeaderPageLayout = ({children}:Props) => {
     const showImageModal = useSelector(imageModalSelector)
 
   const closeModalFunction = () => closeModal(dispatch)
-  const newboardHandlerFunction = () => newboardHandler(dispatch)
+  const newboardHandlerFunction = useCallback(() => newboardHandler(dispatch), [])
   const imageModalHandlerFunction = (id:string) => {
     setImageClickedID(id)
     imageModalHandler(dispatch)
+  }
+  window.onpopstate = ()=> {
+    closeModalFunction()
+    imageCloseModalFunction()
   }
   const imageCloseModalFunction = ()=> imageCloseModal(dispatch)
   return (
