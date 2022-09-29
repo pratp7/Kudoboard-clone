@@ -1,6 +1,5 @@
 import { ActionTypes } from './actionTypes'
 import axios from 'axios'
-import { API } from './apis'
 import { Action } from './actionsTsTypes'
 import { Dispatch } from 'redux'
 import { taskTileDataFormatType } from '../../components/utilities/constants'
@@ -106,7 +105,7 @@ const login = (userInfo:{}, user_id: string, displayName: string ) => {
       type: ActionTypes.IS_LOADING
     })
     try{
-      await axios.post(API, {boardData})
+      await axios.post(process.env.REACT_APP_API as string, {boardData})
         dispatch({
           type: ActionTypes.FORMDATA,
           payload: boardData
